@@ -55,7 +55,7 @@ def main():
     for movie in movie_objects:
         movie_probs[movie.id] = movie.prob
 
-    pickle.dump(movie_probs, open(r"C:\Users\Study\Courses\sabato\DataAnalysis\full_probs.txt", "wb"))
+    pickle.dump(movie_probs, open(r"full_probs.txt", "wb"))
 
     s = 0
     for m in movie_objects:
@@ -76,7 +76,7 @@ def main():
             probs[movie_id2] = (1.0 / (N + 1)) * ((2.0 / (k * (k - 1))) + epsilon)
         double_prob[movie_id] = probs
 
-    pickle.dump(double_prob, open(r"C:\Users\Study\Courses\sabato\DataAnalysis\full_double_probs.txt", "wb"))
+    pickle.dump(double_prob, open(r"full_double_probs.txt", "wb"))
 
     sum_of_2d = 0
     for x in double_prob:
