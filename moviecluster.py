@@ -4,48 +4,70 @@ import math
 import random
 from spectral import spectral
 
+def index_probs(probs, indices):
+    return [probs[i] for i in indices]
+
 def main():
     start_time = time.time()
 
-    full_probs, full_double_probs = read_full_probs()
+#    full_probs, full_double_probs = read_full_probs()
     #convert_full_probs_to_probs(full_probs, full_double_probs)
-    full_double_probs = read_full_double_probs()
+#    full_double_probs = read_full_double_probs()
+
+#    inds = set()
+#    for i in xrange(100):
+#        inds.add(random.randint(0, len(full_double_probs)))
+    #print "Generated %d indices" % len(inds)
+#    indices = [i for i in inds if isinstance(full_double_probs[i], list)]
+#    C = spectral(index_double_probs(full_double_probs, indices), 18)
+
+#    probs = read_probs()
+    #indices = [i for i in range(1, 200) if isinstance(probs[i], list)]
+#    clusters = pivot_cluster(index_double_probs(probs, indices))
+
+#    C2 = []
+#    for c in C:
+#        c = [indices[x] for x in c]
+#        C2.append(c)
+
+#    clusters2 = []
+#    for c in clusters:
+#        c = [indices[x] for x in c]
+#        clusters2.append(c)
+
+    #objective = calculate_objective(clusters2, full_probs, index_double_probs(full_double_probs, indices))
+    #objective2 = calculate_objective(C2, full_probs, index_double_probs(full_double_probs, indices))
+    #print "Objective1: %d, Objective2: %d" % (objective, objective2)
+    #if objective < objective2:
+    #    print "SABATO"
+    #else:
+    #    print "YOAV"
+
+    double_probs = read_probs()
+    full_probs, full_double_probs = read_full_probs()
 
     inds = set()
     for i in xrange(100):
         inds.add(random.randint(0, len(full_double_probs)))
-    #print "Generated %d indices" % len(inds)
     indices = [i for i in inds if isinstance(full_double_probs[i], list)]
-    C = spectral(index_double_probs(full_double_probs, indices), 18)
 
-    probs = read_probs()
-    #indices = [i for i in range(1, 200) if isinstance(probs[i], list)]
-    clusters = pivot_cluster(index_double_probs(probs, indices))
-
-    C2 = []
-    for c in C:
-        c = [indices[x] for x in c]
-        C2.append(c)
-
-    clusters2 = []
-    for c in clusters:
-        c = [indices[x] for x in c]
-        clusters2.append(c)
-
-    objective = calculate_objective(clusters, full_probs, index_double_probs(full_double_probs, indices))
-    objective2 = calculate_objective(C, full_probs, index_double_probs(full_double_probs, indices))
-    #print "Objective1: %d, Objective2: %d" % (objective, objective2)
-    if objective < objective2:
-        print "SABATO"
-    else:
-        print "YOAV"
+    indexed_double_probs = index_double_probs(double_probs, indices)
+    indexed_full_double_probs = index_double_probs(full_double_probs, indices)
+    indexed_probs = index_probs(full_probs, indices)
+    import pdb
+    pdb.set_trace()
+    clusters = pivot_cluster(indexed_double_probs)
+    objective = calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
+    C = spectral(indexed_full_double_probs, 18)
+    objective2 = calculate_objective(C, indexed_probs, indexed_full_double_probs)
+    print "Objective1: %d Objective2: %d" % (objective, objective2)
 
     end_time = time.time()
-    #print "Finished in %d seconds" % (end_time - start_time)
+    print "Finished in %d seconds" % (end_time - start_time)
 
 def index_double_probs(double_probs, indices):
     l = [double_probs[i] for i in indices if isinstance(double_probs[i], list)]
-    return [[x[i] for i in indices] for x in l if isinstance(x, list)]
+    return [[x[i] for i in indices] for x in l]
 
 def read_full_double_probs():
     return pickle.load(open("full_double_probs.txt", "rb"))
@@ -81,18 +103,16 @@ def calculate_objective(clusters, probs, double_probs):
     for c in clusters:
         N = len(c)
         for i in xrange(N):
-            if not isinstance(double_probs[i], list):
-                continue
-            for j in xrange(N):
-                if i != j and isinstance(double_probs[j], list):
-                    try:
-                        if N == 1:
-                            objective += math.log(1.0 / probs[c[0]])
-                        else:
-                            objective += (1.0 / (N - 1)) * math.log(1.0 / double_probs[i][j])
-                    except:
-                        import pdb
-                        pdb.set_trace()
+            if N == 1:
+                objective += math.log(1.0 / probs[c[0]])
+            else:
+                for j in xrange(N):
+                    if i != j:
+                        try:
+                            objective += (1.0 / (N - 1)) * math.log(1.0 / double_probs[c[i]][c[j]])
+                        except:
+                            import pdb
+                            pdb.set_trace()
     return objective
 
 def pivot_cluster(probs):
