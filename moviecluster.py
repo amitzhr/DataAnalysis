@@ -1,24 +1,57 @@
 import pickle
 import time
 import math
-import copy
+import random
+from spectral import spectral
 
 def main():
     start_time = time.time()
 
-    #full_probs, full_double_probs = read_full_probs()
-    #convert_full_probs_to_probs(full_probs, full_double_probs)
     full_probs, full_double_probs = read_full_probs()
-    clusters = pivot_cluster(read_probs())
-    objective = calculate_objective(clusters, full_probs, full_double_probs)
-    import pdb
-    pdb.set_trace()
+    #convert_full_probs_to_probs(full_probs, full_double_probs)
+    full_double_probs = read_full_double_probs()
+
+    inds = set()
+    for i in xrange(100):
+        inds.add(random.randint(0, len(full_double_probs)))
+    #print "Generated %d indices" % len(inds)
+    indices = [i for i in inds if isinstance(full_double_probs[i], list)]
+    C = spectral(index_double_probs(full_double_probs, indices), 18)
+
+    probs = read_probs()
+    #indices = [i for i in range(1, 200) if isinstance(probs[i], list)]
+    clusters = pivot_cluster(index_double_probs(probs, indices))
+
+    C2 = []
+    for c in C:
+        c = [indices[x] for x in c]
+        C2.append(c)
+
+    clusters2 = []
+    for c in clusters:
+        c = [indices[x] for x in c]
+        clusters2.append(c)
+
+    objective = calculate_objective(clusters, full_probs, index_double_probs(full_double_probs, indices))
+    objective2 = calculate_objective(C, full_probs, index_double_probs(full_double_probs, indices))
+    #print "Objective1: %d, Objective2: %d" % (objective, objective2)
+    if objective < objective2:
+        print "SABATO"
+    else:
+        print "YOAV"
 
     end_time = time.time()
-    print "Finished in %d seconds" % (end_time - start_time)
+    #print "Finished in %d seconds" % (end_time - start_time)
+
+def index_double_probs(double_probs, indices):
+    l = [double_probs[i] for i in indices if isinstance(double_probs[i], list)]
+    return [[x[i] for i in indices] for x in l if isinstance(x, list)]
+
+def read_full_double_probs():
+    return pickle.load(open("full_double_probs.txt", "rb"))
 
 def read_full_probs():
-    return pickle.load(open("full_probs.txt", "rb")), pickle.load(open("full_double_probs.txt", "rb"))
+    return pickle.load(open("full_probs.txt", "rb")), read_full_double_probs()
 
 def read_probs():
     return pickle.load(open("double_probs.txt", "rb"))
@@ -75,7 +108,7 @@ def pivot_cluster(probs):
 
     i = find_min_index()
     counter = 0
-    while i:
+    while i is not None:
         cluster = [i]
         for j in xrange(i + 1, N):
             if not isinstance(probs[j], list):
@@ -90,7 +123,7 @@ def pivot_cluster(probs):
         clustering.append(cluster)
         i = find_min_index()
 
-    print counter
+    #print counter
     return clustering
 
 if __name__ == "__main__":
