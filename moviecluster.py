@@ -45,6 +45,7 @@ def main():
 
     double_probs = pivot_cluster.read_probs()
     full_probs, full_double_probs = pivot_cluster.read_full_probs()
+    movie_sequels = pivot_cluster.read_movie_sequels()
 
     while True:
         try:
@@ -52,23 +53,23 @@ def main():
             reload(spectral)
             reload(pivot_cluster)
             reload(delta_cluster)
-            indices = set()
-            i = 0
-            while i < 100:
-                index = random.randint(0, len(full_double_probs))
-                if not isinstance(full_double_probs[index], list) or index in indices:
-                    continue
-                i += 1
-                indices.add(index)
+            indices = pivot_cluster.generate_indices(full_double_probs)
 
             indexed_double_probs = pivot_cluster.index_double_probs(double_probs, indices)
             indexed_full_double_probs = pivot_cluster.index_double_probs(full_double_probs, indices)
             indexed_probs = pivot_cluster.index_probs(full_probs, indices)
+            indexed_movie_sequels = pivot_cluster.index_movie_sequels(movie_sequels, indices)
+
             clusters = pivot_cluster.pivot_cluster(indexed_double_probs[:])
-            clusters2 = delta_cluster.delta_cluster(indexed_double_probs[:])
+            clusters2 = delta_cluster.delta_cluster(indexed_probs, indexed_double_probs[:], indexed_movie_sequels)
             objective = pivot_cluster.calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
             objective2 = pivot_cluster.calculate_objective(clusters2, indexed_probs, indexed_full_double_probs)
+
+            pivot_cluster.print_movie_names(clusters, indices)
+            pivot_cluster.print_movie_names(clusters2, indices)
             print "Objective1: %d Objective2: %d" % (objective, objective2)
+            print "Len1: %d Len2: %d" % (len(clusters), len(clusters2))
+
         except KeyboardInterrupt:
             break
         except:

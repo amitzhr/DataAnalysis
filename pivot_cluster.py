@@ -1,5 +1,22 @@
 import pickle
 import math
+import random
+
+def generate_indices(full_double_probs):
+    indices = set()
+    i = 0
+    while i < 100:
+        index = random.randint(0, len(full_double_probs))
+        if not isinstance(full_double_probs[index], list) or index in indices:
+            continue
+        i += 1
+        indices.add(index)
+
+    #for m in [1221, 2023, 858, 3438, 3439, 3440, 3430, 3431, 3432, 3433, 3434, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981]:
+    #    indices.add(m)
+    #indices = range(1000)
+    #indices = [x for x in indices if isinstance(full_double_probs, list)]
+    return list(indices)
 
 def index_probs(probs, indices):
     return [probs[i] for i in indices]
@@ -7,6 +24,21 @@ def index_probs(probs, indices):
 def index_double_probs(double_probs, indices):
     l = [double_probs[i] for i in indices if isinstance(double_probs[i], list)]
     return [[x[i] for i in indices] for x in l]
+
+def index_movie_sequels(movie_sequels, indices):
+    new_sequels = []
+    for s in movie_sequels:
+        l = []
+        for x in s:
+            if x in indices:
+                l.append(indices.index(x))
+        if l:
+            new_sequels.append(l)
+
+    return new_sequels
+
+def read_movie_sequels():
+    return pickle.load(open("movie_sequels.txt", "rb"))
 
 def read_full_double_probs():
     return pickle.load(open("full_double_probs.txt", "rb"))
@@ -90,5 +122,26 @@ def pivot_cluster(probs):
         clustering.append(cluster)
         i = find_min_index()
 
-    print clustering
     return clustering
+
+def print_movie_names(clusters, indices):
+    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+    real_clusters = []
+    indices = list(indices)
+    for c in clusters:
+        real_c = [indices[i] for i in c]
+        real_clusters.append(real_c)
+
+    movie_dic = {}
+    movies_data = open("movies.dat", "rb").readlines()
+    for movie_line in movies_data:
+        id = movie_line.split('::')[0]
+        movie_name = ' '.join(movie_line.split('::')[1:])
+        movie_dic[id] = movie_name
+
+    for c in real_clusters:
+        if len(c) >1:
+            for movie in c:
+                print movie_dic[str(movie)]
+            print '####################'
+

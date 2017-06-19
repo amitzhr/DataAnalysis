@@ -84,6 +84,43 @@ def main():
 
     print "Sum of double probs: %d" % sum_of_2d
 
+def strip_movie_name(movie_name):
+    REMOVE = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', '1', '2', '3', '4', '5', '6', 'Part', 'The', ':', ',']
+    # Remove the year
+    movie_name = ' '.join(movie_name.split(' ')[:-1])
+
+    # Remove everything after ':'
+    movie_name = movie_name.split(':')[0]
+
+    for x in REMOVE:
+        movie_name = movie_name.replace(x, "")
+    movie_name = movie_name.strip()
+    return movie_name
+
+def parse_movie_sequels():
+    movie_dic = {}
+    movies_data = open("movies.dat", "rb").readlines()
+    for movie_line in movies_data:
+        id = int(movie_line.split('::')[0])
+        movie_name = movie_line.split('::')[1]
+        movie_dic[id] = strip_movie_name(movie_name)
+
+    sequels = []
+    for id, name in movie_dic.iteritems():
+        s = []
+        for id2, name2 in movie_dic.iteritems():
+            if name == name2 and id != id2:
+                s.append(id2)
+        if len(s) > 0:
+            s.append(id)
+            s.sort()
+            if s not in sequels:
+                sequels.append(s)
+    import pickle
+    pickle.dump(sequels, open("movie_sequels.txt", "wb"))
+
+
 
 if __name__ == "__main__":
-    main()
+    #main()
+    parse_movie_sequels()
