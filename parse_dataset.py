@@ -54,10 +54,8 @@ def main():
 
     json.dump(movie_probs, open(r"full_probs.txt", "wb"))
 
-    s = 0
-    for m in movie_objects:
-        s += m.prob
-    print "Sum of probs: %d" % s
+    import pdb
+    pdb.set_trace()
 
     max_index = max(movies.keys()) + 1
 
@@ -80,13 +78,6 @@ def main():
     open("bad_movies.txt", "wb").write("\n".join(bad_movies))
 
     json.dump(double_prob, open(r"full_double_probs.txt", "wb"))
-
-    sum_of_2d = 0
-    for x in double_prob:
-        if x:
-            sum_of_2d += sum(x)
-
-    print "Sum of double probs: %d" % sum_of_2d
 
     parse_movie_sequels()
 

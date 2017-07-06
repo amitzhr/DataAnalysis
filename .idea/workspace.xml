@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9532df2c-0632-4eea-909e-adc3db66683d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/generate_movie_ids.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/delta_cluster.py" afterPath="$PROJECT_DIR$/delta_cluster.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/moviecluster.py" afterPath="$PROJECT_DIR$/moviecluster.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/getmoviefiles.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/parse_dataset.py" afterPath="$PROJECT_DIR$/parse_dataset.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pivot_cluster.py" afterPath="$PROJECT_DIR$/pivot_cluster.py" />
     </list>
     <ignored path="DataAnalysis.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,9 +27,21 @@
       <file leaf-file-name="parse_dataset.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/parse_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="81" column="39" selection-start-line="81" selection-start-column="39" selection-end-line="81" selection-end-column="39" />
+            <state relative-caret-position="748">
+              <caret line="68" column="38" selection-start-line="68" selection-start-column="38" selection-end-line="68" selection-end-column="38" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="getmoviefiles.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/getmoviefiles.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="8" column="66" selection-start-line="8" selection-start-column="66" selection-end-line="8" selection-end-column="66" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -59,7 +69,7 @@
       <file leaf-file-name="moviecluster.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/moviecluster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="714">
+            <state relative-caret-position="-204">
               <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -80,11 +90,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="delta_cluster.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="delta_cluster.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/delta_cluster.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="209">
-              <caret line="24" column="22" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
+            <state relative-caret-position="787">
+              <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -121,11 +131,12 @@
         <option value="$PROJECT_DIR$/all_clusters.py" />
         <option value="$PROJECT_DIR$/improve_delta_cluster.py" />
         <option value="$PROJECT_DIR$/bad_movies.txt" />
-        <option value="$PROJECT_DIR$/parse_dataset.py" />
         <option value="$PROJECT_DIR$/pivot_cluster.py" />
         <option value="$PROJECT_DIR$/generate_movie_ids.py" />
         <option value="$PROJECT_DIR$/moviecluster.py" />
         <option value="$PROJECT_DIR$/delta_cluster.py" />
+        <option value="$PROJECT_DIR$/parse_dataset.py" />
+        <option value="$PROJECT_DIR$/getmoviefiles.py" />
       </list>
     </option>
   </component>
@@ -723,22 +734,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/movies.dat">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="2383" column="6" selection-start-line="2383" selection-start-column="0" selection-end-line="2383" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/bad_movies.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="649" column="4" selection-start-line="649" selection-start-column="4" selection-end-line="649" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/randomsubset20.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -771,14 +766,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/parse_dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="81" column="39" selection-start-line="81" selection-start-column="39" selection-end-line="81" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pivot_cluster.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
@@ -786,6 +773,40 @@
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/delta_cluster.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="787">
+          <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/moviecluster.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-204">
+          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/movies.dat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="2383" column="6" selection-start-line="2383" selection-start-column="0" selection-end-line="2383" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bad_movies.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="649" column="4" selection-start-line="649" selection-start-column="4" selection-end-line="649" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -797,21 +818,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/moviecluster.py">
+    <entry file="file://$PROJECT_DIR$/parse_dataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="714">
-          <caret line="42" column="0" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="748">
+          <caret line="68" column="38" selection-start-line="68" selection-start-column="38" selection-end-line="68" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/delta_cluster.py">
+    <entry file="file://$PROJECT_DIR$/getmoviefiles.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="209">
-          <caret line="24" column="22" selection-start-line="24" selection-start-column="22" selection-end-line="24" selection-end-column="22" />
-          <folding />
+        <state relative-caret-position="136">
+          <caret line="8" column="66" selection-start-line="8" selection-start-column="66" selection-end-line="8" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
