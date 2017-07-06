@@ -1,6 +1,7 @@
 import json
 import math
 import random
+import os
 
 def generate_indices(full_double_probs):
     indices = set()
@@ -37,17 +38,17 @@ def index_movie_sequels(movie_sequels, indices):
 
     return new_sequels
 
-def read_movie_sequels():
-    return json.load(open("movie_sequels.txt", "rb"))
+def read_movie_sequels(dataset_dir):
+    return json.load(open(os.path.join(dataset_dir, "movie_sequels.txt"), "rb"))
 
-def read_full_double_probs():
-    return json.load(open("full_double_probs.txt", "rb"))
+def read_full_double_probs(dataset_dir):
+    return json.load(open(os.path.join(dataset_dir, "full_double_probs.txt"), "rb"))
 
-def read_full_probs():
-    return json.load(open("full_probs.txt", "rb")), read_full_double_probs()
+def read_full_probs(dataset_dir):
+    return json.load(open(os.path.join(dataset_dir, "full_probs.txt"), "rb")), read_full_double_probs(dataset_dir)
 
-def read_probs():
-    return json.load(open("double_probs.txt", "rb"))
+def read_probs(dataset_dir):
+    return json.load(open(os.path.join(dataset_dir, "double_probs.txt"), "rb"))
 
 def convert_full_probs_to_probs(full_probs, full_double_probs):
     N = len(full_double_probs)
@@ -114,7 +115,7 @@ def pivot_cluster(probs):
 
     return clustering
 
-def print_movie_names(clusters, indices):
+def print_movie_names(clusters, indices, dataset_dir):
     real_clusters = []
     indices = list(indices)
     for c in clusters:
@@ -122,7 +123,7 @@ def print_movie_names(clusters, indices):
         real_clusters.append(real_c)
 
     movie_dic = {}
-    movies_data = open("movies.dat", "rb").readlines()
+    movies_data = open(os.path.join(dataset_dir, "movies.dat"), "rb").readlines()
     for movie_line in movies_data:
         id = movie_line.split('::')[0]
         movie_name = movie_line.split('::')[1]

@@ -5,20 +5,20 @@ import spectral
 import pivot_cluster
 import sys
 
-def load_movie_ids(subset_file_path):
+def load_movie_ids(subset_file_path, dataset_dir):
     assert os.path.exists(subset_file_path), "subset path doesn't exist!"
     data = open(subset_file_path, "rb").read()
     movie_ids = [int(x) for x in data.splitlines()]
-    bad_movie_ids = [int(x) for x in open("bad_movies.txt", "rb").read().splitlines()]
+    bad_movie_ids = [int(x) for x in open(os.path.join(dataset_dir, "bad_movies.txt"), "rb").read().splitlines()]
     for x in movie_ids:
         if x in bad_movie_ids:
             raise Exception("Bad movie ID %d given! (Not above 10 ratings?)" % x)
     return movie_ids
 
 def correlation_main(dataset_dir, subset_file_path):
-    double_probs = pivot_cluster.read_probs()
-    full_probs, full_double_probs = pivot_cluster.read_full_probs()
-    movie_ids = load_movie_ids(subset_file_path)
+    double_probs = pivot_cluster.read_probs(dataset_dir)
+    full_probs, full_double_probs = pivot_cluster.read_full_probs(dataset_dir)
+    movie_ids = load_movie_ids(subset_file_path, dataset_dir)
 
     indexed_double_probs = pivot_cluster.index_double_probs(double_probs, movie_ids)
     indexed_full_double_probs = pivot_cluster.index_double_probs(full_double_probs, movie_ids)
@@ -27,14 +27,14 @@ def correlation_main(dataset_dir, subset_file_path):
     clusters = pivot_cluster.pivot_cluster(indexed_double_probs[:])
     objective = pivot_cluster.calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
 
-    pivot_cluster.print_movie_names(clusters, movie_ids)
+    pivot_cluster.print_movie_names(clusters, movie_ids, dataset_dir)
     print "Objective: %d" % objective
 
 def improved_main(dataset_dir, subset_file_path):
-    double_probs = pivot_cluster.read_probs()
-    full_probs, full_double_probs = pivot_cluster.read_full_probs()
-    movie_ids = load_movie_ids(subset_file_path)
-    movie_sequels = pivot_cluster.read_movie_sequels()
+    double_probs = pivot_cluster.read_probs(dataset_dir)
+    full_probs, full_double_probs = pivot_cluster.read_full_probs(dataset_dir)
+    movie_ids = load_movie_ids(subset_file_path, dataset_dir)
+    movie_sequels = pivot_cluster.read_movie_sequels(dataset_dir)
 
     indexed_double_probs = pivot_cluster.index_double_probs(double_probs, movie_ids)
     indexed_full_double_probs = pivot_cluster.index_double_probs(full_double_probs, movie_ids)
@@ -44,43 +44,8 @@ def improved_main(dataset_dir, subset_file_path):
     clusters = delta_cluster.delta_cluster(indexed_probs, indexed_double_probs[:], indexed_movie_sequels)
     objective = pivot_cluster.calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
 
-    pivot_cluster.print_movie_names(clusters, movie_ids)
+    pivot_cluster.print_movie_names(clusters, movie_ids, dataset_dir)
     print "Objective: %d" % objective
-
-def private_main():
-    double_probs = pivot_cluster.read_probs()
-    full_probs, full_double_probs = pivot_cluster.read_full_probs()
-    movie_sequels = pivot_cluster.read_movie_sequels()
-
-    while True:
-        try:
-            os.system("pause")
-            reload(spectral)
-            reload(pivot_cluster)
-            reload(delta_cluster)
-            indices = pivot_cluster.generate_indices(full_double_probs)
-
-            indexed_double_probs = pivot_cluster.index_double_probs(double_probs, indices)
-            indexed_full_double_probs = pivot_cluster.index_double_probs(full_double_probs, indices)
-            indexed_probs = pivot_cluster.index_probs(full_probs, indices)
-            indexed_movie_sequels = pivot_cluster.index_movie_sequels(movie_sequels, indices)
-
-            clusters = pivot_cluster.pivot_cluster(indexed_double_probs[:])
-            clusters2 = delta_cluster.delta_cluster(indexed_probs, indexed_double_probs[:], indexed_movie_sequels)
-            objective = pivot_cluster.calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
-            objective2 = pivot_cluster.calculate_objective(clusters2, indexed_probs, indexed_full_double_probs)
-
-            pivot_cluster.print_movie_names(clusters, indices)
-            pivot_cluster.print_movie_names(clusters2, indices)
-            print "Objective1: %d Objective2: %d" % (objective, objective2)
-            print "Len1: %d Len2: %d" % (len(clusters), len(clusters2))
-
-        except KeyboardInterrupt:
-            break
-        except:
-            import traceback
-            traceback.print_exc()
-
 
 def main():
     start_time = time.time()
