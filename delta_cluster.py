@@ -1,21 +1,14 @@
-import pickle
 
 def n_plus(i, double_probs):
     a = []
     for j in xrange(len(double_probs[i])):
         if double_probs[j] and double_probs[i][j] == 1:
             a.append(j)
-    if i not in a:
-        print "WTF n plus"
-        import pdb
-        pdb.set_trace()
     return a
 
 def is_delta_good(C, i, delta, double_probs):
     n_plus_v = n_plus(i, double_probs)
-    condition_a = len([x for x in C if x in n_plus_v]) >= (1 - delta) * len(C)
-    condition_b = len([x for x in n_plus_v if x not in C]) <= delta * len(C)
-    return condition_a
+    return len([x for x in C if x in n_plus_v]) >= (1 - delta) * len(C)
 
 def delta_cluster(probs, double_probs, movie_sequels):
     clustering = []
@@ -36,8 +29,9 @@ def delta_cluster(probs, double_probs, movie_sequels):
         cluster = n_plus(i, double_probs)
         new_cluster = cluster[:]
         for j in cluster:
-            if not is_delta_good(new_cluster, j, 3 * delta, double_probs):
-                new_cluster.remove(j)
+            if j != i:
+                if not is_delta_good(new_cluster, j, 3 * delta, double_probs):
+                    new_cluster.remove(j)
 
         members_to_add = []
         for j in xrange(N):
@@ -61,5 +55,4 @@ def delta_cluster(probs, double_probs, movie_sequels):
 
         i = find_best_index()
 
-    print clustering
     return clustering

@@ -1,4 +1,4 @@
-import pickle
+import json
 import math
 import random
 
@@ -38,22 +38,16 @@ def index_movie_sequels(movie_sequels, indices):
     return new_sequels
 
 def read_movie_sequels():
-    return pickle.load(open("movie_sequels.txt", "rb"))
+    return json.load(open("movie_sequels.txt", "rb"))
 
 def read_full_double_probs():
-    return pickle.load(open("full_double_probs.txt", "rb"))
+    return json.load(open("full_double_probs.txt", "rb"))
 
 def read_full_probs():
-    return pickle.load(open("full_probs.txt", "rb")), read_full_double_probs()
+    return json.load(open("full_probs.txt", "rb")), read_full_double_probs()
 
 def read_probs():
-    return pickle.load(open("double_probs.txt", "rb"))
-
-def read_probs_small():
-    return pickle.load(open("double_probs_small.txt", "rb"))
-
-def convert_probs_to_small(probs):
-    pickle.dump(probs[:100][:100], open("double_probs_small.txt", "wb"))
+    return json.load(open("double_probs.txt", "rb"))
 
 def convert_full_probs_to_probs(full_probs, full_double_probs):
     N = len(full_double_probs)
@@ -67,7 +61,7 @@ def convert_full_probs_to_probs(full_probs, full_double_probs):
             current_member[j] = int(full_double_probs[i][j] >= full_probs[i] * full_probs[j])
         double_probs[i] = current_member
 
-    pickle.dump(double_probs, open("double_probs.txt", "wb"))
+    json.dump(double_probs, open("double_probs.txt", "wb"))
 
 def calculate_objective(clusters, probs, double_probs):
     if isinstance(clusters[0][0], list):
@@ -85,29 +79,25 @@ def calculate_objective(clusters, probs, double_probs):
     for c in clusters:
         N = len(c)
         if N == 1:
-            #print "Singleton: %d" % math.log(1.0 / probs[c[0]])
             objective += math.log(1.0 / probs[c[0]])
         else:
-            objective_before = objective
             for i in xrange(N):
                 for j in xrange(i + 1, N):
                     objective += (1.0 / (N - 1)) * math.log(1.0 / double_probs[c[i]][c[j]])
-            objective_after = objective
-            #print "Not singleton: %d" % (objective_after - objective_before)
     return objective
 
 def pivot_cluster(probs):
     clustering = []
     N = len(probs)
 
-    def find_min_index():
-        for i in xrange(N):
-            if isinstance(probs[i], list):
-                return i
-        else:
+    def find_random_index():
+        valid_indices = [i for i in xrange(N) if isinstance(probs[i], list)]
+        if len(valid_indices) == 0:
             return None
+        else:
+            return random.choice(valid_indices)
 
-    i = find_min_index()
+    i = find_random_index()
     while i is not None:
         cluster = [i]
         for j in xrange(i + 1, N):
@@ -120,12 +110,11 @@ def pivot_cluster(probs):
 
         probs[i] = 0
         clustering.append(cluster)
-        i = find_min_index()
+        i = find_random_index()
 
     return clustering
 
 def print_movie_names(clusters, indices):
-    print "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     real_clusters = []
     indices = list(indices)
     for c in clusters:
@@ -136,12 +125,9 @@ def print_movie_names(clusters, indices):
     movies_data = open("movies.dat", "rb").readlines()
     for movie_line in movies_data:
         id = movie_line.split('::')[0]
-        movie_name = ' '.join(movie_line.split('::')[1:])
+        movie_name = movie_line.split('::')[1]
         movie_dic[id] = movie_name
 
     for c in real_clusters:
-        if len(c) >1:
-            for movie in c:
-                print movie_dic[str(movie)]
-            print '####################'
-
+        text_list = ["%d %s" % (movie, movie_dic[str(movie)]) for movie in c]
+        print ", ".join(text_list)

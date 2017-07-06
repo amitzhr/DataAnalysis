@@ -1,0 +1,16 @@
+262 Little Princess, A (1995), 313 Swan Princess, The (1994), 343 Baby-Sitters Club, The (1995), 355 Flintstones, The (1994), 362 Jungle Book, The (1994), 364 Lion King, The (1994), 392 Secret Adventures of Tom Thumb, The (1993), 421 Black Beauty (1994), 455 Free Willy (1993), 484 Lassie (1994), 531 Secret Garden, The (1993)
+258 Kid in King Arthur's Court, A (1995), 13 Balto (1995), 48 Pocahontas (1995), 54 Big Green, The (1995), 60 Indian in the Cupboard, The (1995), 87 Dunston Checks In (1996), 107 Muppet Treasure Island (1996), 3855 Affair of Love, An (Une Liaison Pornographique) (1999), 126 NeverEnding Story III, The (1994), 146 Amazing Panda Adventure, The (1995), 158 Casper (1995), 169 Free Willy 2: The Adventure Home (1995), 181 Mighty Morphin Power Rangers: The Movie (1995), 238 Far From Home: The Adventures of Yellow Dog (1995), 239 Goofy Movie, A (1995), 241 Fluke (1995), 244 Gumby: The Movie (1995), 317 Santa Clause, The (1994), 374 Richie Rich (1994), 502 Next Karate Kid, The (1994)
+34 Babe (1995)
+1 Toy Story (1995)
+Objective: 270
+Finished in 8 seconds
+
+C:\Users\Study\Courses\sabato\DataAnalysis>python moviecluster.py C:\Users\Study\Courses\sabato\DataAnalysis 2 subset2.txt
+1 Toy Story (1995), 13 Balto (1995), 48 Pocahontas (1995), 262 Little Princess, A (1995), 392 Secret Adventures of Tom Thumb, The (1993), 531 Secret Garden, The (1993)
+34 Babe (1995), 54 Big Green, The (1995), 146 Amazing Panda Adventure, The (1995), 343 Baby-Sitters Club, The (1995), 484 Lassie (1994)
+258 Kid in King Arthur's Court, A (1995), 60 Indian in the Cupboard, The (1995), 107 Muppet Treasure Island (1996), 126 NeverEnding Story III, The (1994), 158 Casper (1995), 181 Mighty Morphin Power Rangers: The Movie (1995), 239 Goofy Movie, A (1995), 313 Swan Princess, The (1994), 317 Santa Clause, The (1994), 362 Jungle Book, The (1994), 364 Lion King, The (1994), 374 Richie Rich (1994), 238 Far From Home: The Adventures of Yellow Dog (1995), 241 Fluke (1995), 355 Flintstones, The (1994)
+169 Free Willy 2: The Adventure Home (1995), 244 Gumby: The Movie (1995), 421 Black Beauty (1994), 455 Free Willy (1993), 502 Next Karate Kid, The (1994)
+87 Dunston Checks In (1996)
+3855 Affair of Love, An (Une Liaison Pornographique) (1999)
+Objective: 262
+Finished in 8 seconds

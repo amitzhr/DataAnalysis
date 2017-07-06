@@ -1,48 +1,53 @@
-import pickle
 import time
-import math
-import random
 import os
 import delta_cluster
 import spectral
 import pivot_cluster
+import sys
 
-def main():
-    start_time = time.time()
+def load_movie_ids(subset_file_path):
+    assert os.path.exists(subset_file_path), "subset path doesn't exist!"
+    data = open(subset_file_path, "rb").read()
+    movie_ids = [int(x) for x in data.splitlines()]
+    bad_movie_ids = [int(x) for x in open("bad_movies.txt", "rb").read().splitlines()]
+    for x in movie_ids:
+        if x in bad_movie_ids:
+            raise Exception("Bad movie ID %d given! (Not above 10 ratings?)" % x)
+    return movie_ids
 
-#    full_probs, full_double_probs = read_full_probs()
-    #convert_full_probs_to_probs(full_probs, full_double_probs)
-#    full_double_probs = read_full_double_probs()
+def correlation_main(dataset_dir, subset_file_path):
+    double_probs = pivot_cluster.read_probs()
+    full_probs, full_double_probs = pivot_cluster.read_full_probs()
+    movie_ids = load_movie_ids(subset_file_path)
 
-#    inds = set()
-#    for i in xrange(100):
-#        inds.add(random.randint(0, len(full_double_probs)))
-    #print "Generated %d indices" % len(inds)
-#    indices = [i for i in inds if isinstance(full_double_probs[i], list)]
-#    C = spectral(index_double_probs(full_double_probs, indices), 18)
+    indexed_double_probs = pivot_cluster.index_double_probs(double_probs, movie_ids)
+    indexed_full_double_probs = pivot_cluster.index_double_probs(full_double_probs, movie_ids)
+    indexed_probs = pivot_cluster.index_probs(full_probs, movie_ids)
 
-#    probs = read_probs()
-    #indices = [i for i in range(1, 200) if isinstance(probs[i], list)]
-#    clusters = pivot_cluster(index_double_probs(probs, indices))
+    clusters = pivot_cluster.pivot_cluster(indexed_double_probs[:])
+    objective = pivot_cluster.calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
 
-#    C2 = []
-#    for c in C:
-#        c = [indices[x] for x in c]
-#        C2.append(c)
+    pivot_cluster.print_movie_names(clusters, movie_ids)
+    print "Objective: %d" % objective
 
-#    clusters2 = []
-#    for c in clusters:
-#        c = [indices[x] for x in c]
-#        clusters2.append(c)
+def improved_main(dataset_dir, subset_file_path):
+    double_probs = pivot_cluster.read_probs()
+    full_probs, full_double_probs = pivot_cluster.read_full_probs()
+    movie_ids = load_movie_ids(subset_file_path)
+    movie_sequels = pivot_cluster.read_movie_sequels()
 
-    #objective = calculate_objective(clusters2, full_probs, index_double_probs(full_double_probs, indices))
-    #objective2 = calculate_objective(C2, full_probs, index_double_probs(full_double_probs, indices))
-    #print "Objective1: %d, Objective2: %d" % (objective, objective2)
-    #if objective < objective2:
-    #    print "SABATO"
-    #else:
-    #    print "YOAV"
+    indexed_double_probs = pivot_cluster.index_double_probs(double_probs, movie_ids)
+    indexed_full_double_probs = pivot_cluster.index_double_probs(full_double_probs, movie_ids)
+    indexed_probs = pivot_cluster.index_probs(full_probs, movie_ids)
+    indexed_movie_sequels = pivot_cluster.index_movie_sequels(movie_sequels, movie_ids)
 
+    clusters = delta_cluster.delta_cluster(indexed_probs, indexed_double_probs[:], indexed_movie_sequels)
+    objective = pivot_cluster.calculate_objective(clusters, indexed_probs, indexed_full_double_probs)
+
+    pivot_cluster.print_movie_names(clusters, movie_ids)
+    print "Objective: %d" % objective
+
+def private_main():
     double_probs = pivot_cluster.read_probs()
     full_probs, full_double_probs = pivot_cluster.read_full_probs()
     movie_sequels = pivot_cluster.read_movie_sequels()
@@ -76,9 +81,23 @@ def main():
             import traceback
             traceback.print_exc()
 
+
+def main():
+    start_time = time.time()
+
+    assert len(sys.argv) == 4, "Incorrect number of parameters!"
+    dataset_dir = sys.argv[1]
+    mode = int(sys.argv[2])
+    subset_file_path = sys.argv[3]
+    assert mode in [1,2], "Incorrect mode given!"
+
+    if mode == 1:
+        correlation_main(dataset_dir, subset_file_path)
+    elif mode == 2:
+        improved_main(dataset_dir, subset_file_path)
+
     end_time = time.time()
     print "Finished in %d seconds" % (end_time - start_time)
-
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,4 @@
-import pickle
+import json
 
 class Movie(object):
     def __init__(self, id, prob):
@@ -10,7 +10,7 @@ class Movie(object):
         return "<Movie ID=%s prob=%f>" % (self.id, self.prob)
 
 def main():
-    data = open("ratings.dat","rb").read()
+    data = open("ratings.dat", "rb").read()
     lines = data.splitlines()
     movie_user = []
     for line in lines:
@@ -28,7 +28,6 @@ def main():
         if len(v) < 10:
             del movies[m]
 
-
     users = {}
     for mu in movie_user:
         user_id = mu[0]
@@ -37,7 +36,6 @@ def main():
         if user_id not in users:
             users[user_id] = set()
         users[user_id].add(mu[1])
-
 
     N = len(users.keys())
     k = len(movies.keys())
@@ -54,7 +52,7 @@ def main():
     for movie in movie_objects:
         movie_probs[movie.id] = movie.prob
 
-    pickle.dump(movie_probs, open(r"full_probs.txt", "wb"))
+    json.dump(movie_probs, open(r"full_probs.txt", "wb"))
 
     s = 0
     for m in movie_objects:
@@ -75,7 +73,13 @@ def main():
             probs[movie_id2] = (1.0 / (N + 1)) * ((2.0 / (k * (k - 1))) + epsilon)
         double_prob[movie_id] = probs
 
-    pickle.dump(double_prob, open(r"full_double_probs.txt", "wb"))
+    bad_movies = []
+    for i in xrange(len(double_prob)):
+        if not isinstance(double_prob[i], list):
+            bad_movies.append(str(i))
+    open("bad_movies.txt", "wb").write("\n".join(bad_movies))
+
+    json.dump(double_prob, open(r"full_double_probs.txt", "wb"))
 
     sum_of_2d = 0
     for x in double_prob:
@@ -83,6 +87,8 @@ def main():
             sum_of_2d += sum(x)
 
     print "Sum of double probs: %d" % sum_of_2d
+
+    parse_movie_sequels()
 
 def strip_movie_name(movie_name):
     REMOVE = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', '1', '2', '3', '4', '5', '6', 'Part', 'The', ':', ',']
@@ -116,11 +122,8 @@ def parse_movie_sequels():
             s.sort()
             if s not in sequels:
                 sequels.append(s)
-    import pickle
-    pickle.dump(sequels, open("movie_sequels.txt", "wb"))
-
+    json.dump(sequels, open("movie_sequels.txt", "wb"))
 
 
 if __name__ == "__main__":
-    #main()
-    parse_movie_sequels()
+    main()
