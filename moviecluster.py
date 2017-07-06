@@ -1,7 +1,6 @@
 import time
 import os
 import delta_cluster
-import spectral
 import pivot_cluster
 import sys
 
